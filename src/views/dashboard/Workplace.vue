@@ -11,7 +11,7 @@ import Whiteboard from '@/components/Whiteboard.vue'
 export default {
   name: 'Workplace',
   components: {
-Whiteboard
+    Whiteboard
   },
   data () {
     return {

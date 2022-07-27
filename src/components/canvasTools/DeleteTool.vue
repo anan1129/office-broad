@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import customEvents from '~/utils/customEvents'
+import customEvents from '@/utils/customEvents'
 
 export default {
   props: {
@@ -14,19 +14,19 @@ export default {
   },
   mounted () {
     // Activate Event-Listener for 'Delete-Key', when Mouse is over canvas
-    this.canvas.on('mouse:over', (event) => {
+    this.canvas.on && this.canvas.on('mouse:over', (event) => {
       if (event.target === null) {
         this.activateRemoveObjectEventListener()
       }
     })
     // Remove Event-Listener for 'Delete-Key', when Mouse is outside Canvas
-    this.canvas.on('mouse:out', (event) => {
+    this.canvas.on && this.canvas.on('mouse:out', (event) => {
       if (event.target === null) {
         this.deactivateRemoveObjectEventListener()
       }
     })
 
-    this.$nuxt.$on(
+    this.$EventBus.$on(
       customEvents.canvasTools.setRemoveObjectEventListener,
       (payload) => {
         if (payload) {

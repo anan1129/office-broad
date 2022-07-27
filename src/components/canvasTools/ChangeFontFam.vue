@@ -33,7 +33,7 @@
 </template>
 <script>
 
-import customEvents from '~/utils/customEvents'
+import customEvents from '@/utils/customEvents'
 
 export default {
   props: {
@@ -83,30 +83,30 @@ export default {
       const canvasObject = this.canvas.getActiveObject()
       if (canvasObject.whitebirdData.type === 'StickyNote') {
         canvasObject.item(1).set('fontFamily', font)
-        this.$nuxt.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
+        this.$EventBus.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
       } else if (canvasObject.whitebirdData.type === 'StickyNoteTextBox') {
         this.canvas.getActiveObject().set('fontFamily', font)
-        this.$nuxt.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
+        this.$EventBus.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
       } else {
         this.canvas.getActiveObject().set('fontFamily', font)
       }
       this.canvas.requestRenderAll()
-      this.$nuxt.$emit(customEvents.canvasTools.sendCustomModified, canvasObject)
+      this.$EventBus.$emit(customEvents.canvasTools.sendCustomModified, canvasObject)
     },
     changeStyle () {
       const fontstyle = this.selectedStyle
       const canvasObject = this.canvas.getActiveObject()
       if (canvasObject.whitebirdData.type === 'StickyNote') {
         canvasObject.item(1).set('fontStyle', fontstyle)
-        this.$nuxt.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
+        this.$EventBus.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
       } else if (canvasObject.whitebirdData.type === 'StickyNoteTextBox') {
         this.canvas.getActiveObject().set('fontStyle', fontstyle)
-        this.$nuxt.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
+        this.$EventBus.$emit(customEvents.canvasTools.stickyNoteFontResize, canvasObject)
       } else {
         this.canvas.getActiveObject().set('fontStyle', fontstyle)
       }
       this.canvas.requestRenderAll()
-      this.$nuxt.$emit(customEvents.canvasTools.sendCustomModified, canvasObject)
+      this.$EventBus.$emit(customEvents.canvasTools.sendCustomModified, canvasObject)
     }
   }
 }

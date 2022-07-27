@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
+import { UserLayout, BasicLayout, BlankLayout, BoardLayout } from '@/layouts'
 import { bxAnaalyse } from '@/core/icons'
 
 const RouteView = {
@@ -13,9 +13,24 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: 'menu.home' },
-    redirect: '/dashboard/workplace',
+    redirect: '/white/board',
     children: [
-      // dashboard
+      // whiteboard
+      {
+        path: '/whiteboard',
+        name: 'whiteboard',
+        redirect: '/white/board',
+        component: BoardLayout,
+        meta: { title: '白板', keepAlive: true, icon: bxAnaalyse, permission: [] },
+        children: [
+          {
+            path: '/white/board',
+            name: 'board',
+            component: () => import('@/views/whiteBoard/Board'),
+            meta: { title: '白板', keepAlive: false, permission: [] }
+          }
+        ]
+      },
       {
         path: '/dashboard',
         name: 'dashboard',

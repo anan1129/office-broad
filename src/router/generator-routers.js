@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import * as loginService from '@/api/login'
 // eslint-disable-next-line
-import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
+import { BasicLayout, BlankLayout, PageView, RouteView, BoardLayout } from '@/layouts'
 
 // 前端路由表
 const constantRouterComponents = {
@@ -10,47 +10,49 @@ const constantRouterComponents = {
   BlankLayout: BlankLayout,
   RouteView: RouteView,
   PageView: PageView,
+  BoardLayout: BoardLayout,
   '403': () => import(/* webpackChunkName: "error" */ '@/views/exception/403'),
   '404': () => import(/* webpackChunkName: "error" */ '@/views/exception/404'),
   '500': () => import(/* webpackChunkName: "error" */ '@/views/exception/500'),
+  'WhiteBoard': () => import(/* webpackChunkName: "error" */ '@/views/whiteBoard/Board'),
 
   // 你需要动态引入的页面组件
   Workplace: () => import('@/views/dashboard/Workplace'),
-  Analysis: () => import('@/views/dashboard/Analysis'),
+  Analysis: () => import('@/views/dashboard/Analysis')
 
-  // form
-  BasicForm: () => import('@/views/form/basicForm'),
-  StepForm: () => import('@/views/form/stepForm/StepForm'),
-  AdvanceForm: () => import('@/views/form/advancedForm/AdvancedForm'),
+  // // form
+  // BasicForm: () => import('@/views/form/basicForm'),
+  // StepForm: () => import('@/views/form/stepForm/StepForm'),
+  // AdvanceForm: () => import('@/views/form/advancedForm/AdvancedForm'),
 
-  // list
-  TableList: () => import('@/views/list/TableList'),
-  StandardList: () => import('@/views/list/BasicList'),
-  CardList: () => import('@/views/list/CardList'),
-  SearchLayout: () => import('@/views/list/search/SearchLayout'),
-  SearchArticles: () => import('@/views/list/search/Article'),
-  SearchProjects: () => import('@/views/list/search/Projects'),
-  SearchApplications: () => import('@/views/list/search/Applications'),
-  ProfileBasic: () => import('@/views/profile/basic'),
-  ProfileAdvanced: () => import('@/views/profile/advanced/Advanced'),
+  // // list
+  // TableList: () => import('@/views/list/TableList'),
+  // StandardList: () => import('@/views/list/BasicList'),
+  // CardList: () => import('@/views/list/CardList'),
+  // SearchLayout: () => import('@/views/list/search/SearchLayout'),
+  // SearchArticles: () => import('@/views/list/search/Article'),
+  // SearchProjects: () => import('@/views/list/search/Projects'),
+  // SearchApplications: () => import('@/views/list/search/Applications'),
+  // ProfileBasic: () => import('@/views/profile/basic'),
+  // ProfileAdvanced: () => import('@/views/profile/advanced/Advanced'),
 
-  // result
-  ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
-  ResultFail: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
+  // // result
+  // ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
+  // ResultFail: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
 
-  // exception
-  Exception403: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
-  Exception404: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
-  Exception500: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
+  // // exception
+  // Exception403: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
+  // Exception404: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
+  // Exception500: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
 
-  // account
-  AccountCenter: () => import('@/views/account/center'),
-  AccountSettings: () => import('@/views/account/settings/Index'),
-  BasicSetting: () => import('@/views/account/settings/BasicSetting'),
-  SecuritySettings: () => import('@/views/account/settings/Security'),
-  CustomSettings: () => import('@/views/account/settings/Custom'),
-  BindingSettings: () => import('@/views/account/settings/Binding'),
-  NotificationSettings: () => import('@/views/account/settings/Notification')
+  // // account
+  // AccountCenter: () => import('@/views/account/center'),
+  // AccountSettings: () => import('@/views/account/settings/Index'),
+  // BasicSetting: () => import('@/views/account/settings/BasicSetting'),
+  // SecuritySettings: () => import('@/views/account/settings/Security'),
+  // CustomSettings: () => import('@/views/account/settings/Custom'),
+  // BindingSettings: () => import('@/views/account/settings/Binding'),
+  // NotificationSettings: () => import('@/views/account/settings/Notification')
 
   // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
 }
@@ -67,13 +69,24 @@ const rootRouter = {
   key: '',
   name: 'index',
   path: '',
-  component: 'BasicLayout',
-  redirect: '/dashboard',
+  component: 'BoardLayout',
+  redirect: '/whiteBoard',
   meta: {
     title: '首页'
   },
   children: []
 }
+// const rootRouter = {
+//   key: '',
+//   name: 'index',
+//   path: '',
+//   component: 'BasicLayout',
+//   redirect: '/whiteBoard',
+//   meta: {
+//     title: '首页'
+//   },
+//   children: []
+// }
 
 /**
  * 动态生成菜单

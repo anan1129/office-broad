@@ -30,12 +30,12 @@ export default {
     })
   },
   mounted () {
-    // this.socket = this.$nuxtSocket({
+    // this.socket = this.$EventBusSocket({
     //   teardown: false,
     //   persist: 'whitebirdSocket'
     // })
 
-    // this.$nuxt.$on(customEvents.canvasTools.updatingDataState, (payload) => {
+    // this.$EventBus.$on(customEvents.canvasTools.updatingDataState, (payload) => {
     //   this.loaded = payload
     // })
   },
@@ -49,7 +49,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .whiteboard-container {
   margin: 0 auto;
   min-height: 100vh;

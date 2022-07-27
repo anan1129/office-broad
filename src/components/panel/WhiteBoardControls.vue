@@ -3,66 +3,7 @@
     <!-- Toolbar Top Left with board name and export, share button -->
     <div class="toolbar--box--top-left">
       <!-- Logo box, shows spinner when loading, logo_box is--loading, loader is--animated -->
-      <div class="logo--box">
-        <a href="/"><img src="../../assets/images/identity.svg"/></a>
-      </div>
-      <div class="toolbar toolbar--big flex mr--1">
-        <div class="toolbar--board toolbar--board--item flex">
-          <!-- Readonly name -->
-          <div style="display: flex">
-            <input readonly value="Whitebird" class="toolbar--board--name" />
-          </div>
-
-          <!-- Export button -->
-          <div
-            id="export-menu-buton"
-            class="toolbar--board toolbar--board--pdf flex--middle"
-            @click="toggleExportDropdown"
-          >
-            <i class="fas fa-download toolbar--button--icon ml-3"></i>
-            <div>{{ $t('whiteboard.export') }}</div>
-
-            <!-- Export menu -->
-            <div
-              v-if="isExportActionsOpened"
-              id="export-menu"
-              class="dropdown dropdown-export dropdown--toolbar fadeInUp"
-            >
-              <ul class="dropdown--menu">
-                <li class="dropdown--menu--item">
-                  <a
-                    id="export-pdf"
-                    href="#"
-                    class="dropdown--menu--link"
-                    @click="exportWhiteboardAsPDF"
-                  >{{ $t('whiteboard.exportPDF') }}</a
-                  >
-                </li>
-                <li class="dropdown--menu--item">
-                  <a
-                    id="export-image"
-                    href="#"
-                    class="dropdown--menu--link"
-                    @click="exportImage"
-                  >{{ $t('whiteboard.exportImage') }}</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Colloboration button -->
-      <div
-        id="colloboration-button"
-        class="toolbar--button toolbar--button--colored toolbar--big"
-        @click="showInviteModal = true"
-      >
-        <i class="fas fa-user-plus toolbar--button--icon"></i>
-        <span>{{ $t('whiteboard.invite') }}</span>
-      </div>
-      <ShareWhiteboardModal :show="showInviteModal" @update-modal="closeModal" />
     </div>
 
     <div class="toolbar-box-middle-left is-flex-direction-column">
@@ -302,19 +243,17 @@ import { mapState } from 'vuex'
 import Slider from 'vue-custom-range-slider'
 import 'vue-custom-range-slider/dist/vue-custom-range-slider.css'
 import { ColorPicker } from 'vue-accessible-color-picker'
-import ColorPalette from '~/components/ColorPicker.vue'
-import StickyNotePicker from '~/components//StickyNotePicker.vue'
-import ShareWhiteboardModal from '~/components//modals/ShareWhiteboard.vue'
-import colorPalette from '~/components/_helpers/colorPalette.js'
-import customEvents from '~/utils/customEvents'
+import ColorPalette from '@/components/ColorPicker.vue'
+import StickyNotePicker from '@/components//StickyNotePicker.vue'
+import colorPalette from '@/components/_helpers/colorPalette.js'
+import customEvents from '@/utils/customEvents'
 
-import WhitebirdLogger from '~/utils/WhitebirdLogger'
+import WhitebirdLogger from '@/utils/WhitebirdLogger'
 
 const logger = new WhitebirdLogger('WhiteBoardControls.vue')
 
 export default {
   components: {
-    ShareWhiteboardModal,
     Slider,
     colorPalette: ColorPalette,
     stickyNotesPicker: StickyNotePicker,
@@ -351,19 +290,19 @@ export default {
   },
   watch: {
     sliderValue (e) {
-      this.$nuxt.$emit(customEvents.canvasTools.drawingChangeWidth, { width: e })
+      this.$EventBus.$emit(customEvents.canvasTools.drawingChangeWidth, { width: e })
     },
     colorPicked (e) {
-      this.$nuxt.$emit(customEvents.canvasTools.drawingChangeColor, { color: e })
+      this.$EventBus.$emit(customEvents.canvasTools.drawingChangeColor, { color: e })
     }
   },
   created () {
-    this.$nuxt.$on('colorChanged', (color) => {
+    this.$EventBus.$on('colorChanged', (color) => {
       this.colorPicked = color
     })
   },
   mounted () {
-    this.$nuxt.$on(customEvents.canvasTools.CloseAllWhiteBoardControls, () => {
+    this.$EventBus.$on(customEvents.canvasTools.CloseAllWhiteBoardControls, () => {
       this.isColorToolBoxOpened = false
       this.isPencilToolboxOpened = false
       this.isShapeToolBoxOpened = false
@@ -379,7 +318,7 @@ export default {
       this.showInviteModal = !this.showInviteModal
     },
     toggleMousePointerToolbox () {
-      this.$nuxt.$emit(customEvents.canvasTools.drawing, { drawingMode: false })
+      this.$EventBus.$emit(customEvents.canvasTools.drawing, { drawingMode: false })
       this.isPencilToolboxOpened = false
       this.isShapeToolBoxOpened = false
       this.isColorToolBoxOpened = false
@@ -389,7 +328,7 @@ export default {
       this.isExportActionsOpened = false
     },
     togglePencilToolbox () {
-      this.$nuxt.$emit(customEvents.canvasTools.drawing, { drawingMode: true })
+      this.$EventBus.$emit(customEvents.canvasTools.drawing, { drawingMode: true })
       this.isPencilToolboxOpened = !this.isPencilToolboxOpened
       this.isShapeToolBoxOpened = false
       this.isColorToolBoxOpened = false
@@ -443,15 +382,15 @@ export default {
       this.isStickyNotesSelected = false
     },
     exportImage () {
-      this.$nuxt.$emit(customEvents.canvasTools.exportImage)
+      this.$EventBus.$emit(customEvents.canvasTools.exportImage)
     },
     exportWhiteboardAsPDF () {
-      this.$nuxt.$emit(customEvents.canvasTools.exportPDF)
+      this.$EventBus.$emit(customEvents.canvasTools.exportPDF)
     },
     toggleRectangle () {
       logger.log('rectangle')
       this.shapeIsSelected = 'far fa-square'
-      this.$nuxt.$emit(customEvents.canvasTools.rectangle, {
+      this.$EventBus.$emit(customEvents.canvasTools.rectangle, {
         stroke: this.colorPicked,
         fill: ''
       })
@@ -459,14 +398,14 @@ export default {
     toggleRectangleFilled () {
       logger.log('rectangle filled')
       this.shapeIsSelected = 'fas fa-square'
-      this.$nuxt.$emit(customEvents.canvasTools.rectangle, {
+      this.$EventBus.$emit(customEvents.canvasTools.rectangle, {
         fill: this.colorPicked
       })
     },
     toggleCircle () {
       logger.log('circle')
       this.shapeIsSelected = 'far fa-circle'
-      this.$nuxt.$emit(customEvents.canvasTools.circle, {
+      this.$EventBus.$emit(customEvents.canvasTools.circle, {
         stroke: this.colorPicked,
         fill: ''
       })
@@ -474,13 +413,13 @@ export default {
     toggleCircleFilled () {
       logger.log('circle filled')
       this.shapeIsSelected = 'fas fa-circle'
-      this.$nuxt.$emit(customEvents.canvasTools.circle, {
+      this.$EventBus.$emit(customEvents.canvasTools.circle, {
         fill: this.colorPicked
       })
     },
     toggleTextBox () {
       logger.log('Textbox filled')
-      this.$nuxt.$emit(customEvents.canvasTools.textbox, {
+      this.$EventBus.$emit(customEvents.canvasTools.textbox, {
         // fill: this.colorPicked,
       })
     },
@@ -530,7 +469,7 @@ export default {
       }
       const states = ['eisenhower', 'blank', 'dots']
       const element = states[this.indexB]
-      this.$nuxt.$emit('imageBackgroundChanged', element)
+      this.$EventBus.$emit('imageBackgroundChanged', element)
       this.indexB += 1
     }
   }
@@ -538,5 +477,5 @@ export default {
 </script>
 
 <style scoped>
-@import '~assets/scss/_whiteboard.scss';
+@import '../../assets/scss/_whiteboard.scss';
 </style>

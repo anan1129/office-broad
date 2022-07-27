@@ -5,7 +5,7 @@
 <script>
 import { fabric } from 'fabric'
 import { v4 } from 'uuid'
-import customEvents from '~/utils/customEvents'
+import customEvents from '@/utils/customEvents'
 
 export default {
   props: {
@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted () {
-    this.$nuxt.$on(customEvents.canvasTools.rectangle, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.rectangle, (payload) => {
       this.canvas.isDrawingMode = false
       this.createRectangle(payload)
     })

@@ -5,7 +5,7 @@
 <script>
 import { fabric } from 'fabric'
 import { v4 } from 'uuid'
-import customEvents from '~/utils/customEvents'
+import customEvents from '@/utils/customEvents'
 
 export default {
   props: {
@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted () {
-    this.$nuxt.$on(customEvents.canvasTools.textbox, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.textbox, (payload) => {
       this.canvas.isDrawingMode = false
       this.createTextBox(payload)
     })

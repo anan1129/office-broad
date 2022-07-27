@@ -6,14 +6,14 @@
 import { fabric } from 'fabric'
 import { v4 } from 'uuid'
 import { mapState } from 'vuex'
-import customEvents from '~/utils/customEvents'
-import WhitebirdLogger from '~/utils/WhitebirdLogger'
+import customEvents from '@/utils/customEvents'
+import WhitebirdLogger from '@/utils/WhitebirdLogger'
 
-import stickynoteBlack from '~/assets/images/stickynote/black.svg'
-import stickynoteBlue from '~/assets/images/stickynote/blue.svg'
-import stickynoteGreen from '~/assets/images/stickynote/green.svg'
-import stickynoteRed from '~/assets/images/stickynote/red.svg'
-import stickynoteYellow from '~/assets/images/stickynote/yellow.svg'
+import stickynoteBlack from '@/assets/images/stickynote/black.svg'
+import stickynoteBlue from '@/assets/images/stickynote/blue.svg'
+import stickynoteGreen from '@/assets/images/stickynote/green.svg'
+import stickynoteRed from '@/assets/images/stickynote/red.svg'
+import stickynoteYellow from '@/assets/images/stickynote/yellow.svg'
 
 const logger = new WhitebirdLogger('StickyNote.vue')
 export default {
@@ -38,12 +38,12 @@ export default {
     })
   },
   mounted () {
-    this.$nuxt.$on(customEvents.canvasTools.stickyNote, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.stickyNote, (payload) => {
       this.canvas.isDrawingMode = false
       this.createStickyNote(payload)
     })
 
-    this.canvas.on('mouse:down', () => {
+    this.canvas.on && this.canvas.on('mouse:down', () => {
       if (this.editingText === true) { this.leaveEditingMode() }
     })
 
@@ -51,17 +51,17 @@ export default {
     "options.target === null" check if mouse outside the Canvas
     "null" means leave canvas e.g. "options.target === rect" means leaving a rectangle
     */
-    // this.canvas.on('mouse:out', (options) => {
+    // this.canvas.on && this.canvas.on('mouse:out', (options) => {
     //    if (options.target === null) {
     //      if (this.editingText === true) { this.leaveEditingMode(); }
     //    }
     //  });
 
-    this.$nuxt.$on(customEvents.canvasTools.stickyNoteEnliven, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.stickyNoteEnliven, (payload) => {
       this.addStickyNoteSettings(payload)
       this.addTextBoxSettings(payload.item(1), payload)
     })
-    this.$nuxt.$on(customEvents.canvasTools.stickyNoteFontResize, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.stickyNoteFontResize, (payload) => {
       if (payload.whitebirdData.type === 'StickyNoteTextBox') {
         this.FontResizeStickyNote(payload, this.groupObject)
       } else {
@@ -89,10 +89,10 @@ export default {
           evented: true
         })
 
-        this.$nuxt.$emit(customEvents.canvasTools.sendCustomModified,
+        this.$EventBus.$emit(customEvents.canvasTools.sendCustomModified,
           this.groupObject)
 
-        this.$nuxt.$emit(
+        this.$EventBus.$emit(
           customEvents.canvasTools.setRemoveObjectEventListener,
           true
         )
@@ -126,8 +126,8 @@ export default {
           selectable: false,
           evented: false
         })
-        this.$nuxt.$emit(customEvents.canvasTools.sendCustomModified, group)
-        this.$nuxt.$emit(
+        this.$EventBus.$emit(customEvents.canvasTools.sendCustomModified, group)
+        this.$EventBus.$emit(
           customEvents.canvasTools.setRemoveObjectEventListener,
           false
         )

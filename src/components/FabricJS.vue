@@ -1,14 +1,14 @@
 <template>
   <div id="canvas-wrapper" class="canvas-wrapper" :class="backgroundImage">
     <canvas id="canvas"> </canvas>
-    <client-only>
+    <div>
       <RectangleTool :canvas="canvas"></RectangleTool>
       <TextboxTool :canvas="canvas"></TextboxTool>
       <CircleTool :canvas="canvas"></CircleTool>
       <StickyNoteTool :canvas="canvas"></StickyNoteTool>
       <DrawingTool :canvas="canvas"></DrawingTool>
       <DeleteTool :canvas="canvas"></DeleteTool>
-    </client-only>
+    </div>
     <ChangeFontFam
       v-for="(container, index) in containers"
       :key="index"
@@ -29,15 +29,15 @@ import { mapState } from 'vuex'
 import { jsPDF } from 'jspdf'
 import { v4 } from 'uuid'
 import FontFaceObserver from 'fontfaceobserver'
-import StickyNoteTool from '~/components/canvasTools/StickyNoteTool'
-import DrawingTool from '~/components/canvasTools/DrawingTool'
-import RectangleTool from '~/components/canvasTools/RectangleTool'
-import TextboxTool from '~/components/canvasTools/TextboxTool'
-import CircleTool from '~/components/canvasTools/CircleTool'
-import DeleteTool from '~/components/canvasTools/DeleteTool'
-import customEvents from '~/utils/customEvents'
-import WhitebirdLogger from '~/utils/WhitebirdLogger'
-import ChangeFontFam from '~/components/canvasTools/ChangeFontFam.vue'
+import StickyNoteTool from '@/components/canvasTools/StickyNoteTool'
+import DrawingTool from '@/components/canvasTools/DrawingTool'
+import RectangleTool from '@/components/canvasTools/RectangleTool'
+import TextboxTool from '@/components/canvasTools/TextboxTool'
+import CircleTool from '@/components/canvasTools/CircleTool'
+import DeleteTool from '@/components/canvasTools/DeleteTool'
+import customEvents from '@/utils/customEvents'
+import WhitebirdLogger from '@/utils/WhitebirdLogger'
+import ChangeFontFam from '@/components/canvasTools/ChangeFontFam.vue'
 
 const logger = new WhitebirdLogger('FabricJS.vue')
 
@@ -53,7 +53,7 @@ export default {
   },
   data () {
     return {
-      canvas: null,
+      canvas: {},
       joined: false,
       backgroundImage: 'dots', /* defaults to dots */
       containers: []
@@ -66,6 +66,7 @@ export default {
   },
   mounted () {
     this.canvas = new fabric.Canvas('canvas')
+    console.log(this.canvas)
     fabric.disableStyleCopyPaste = true
     this.reloadCanvas()
 
@@ -74,18 +75,18 @@ export default {
     }
 
     // Socket Reference
-    this.socket = this.$nuxtSocket({
-      persist: 'whitebirdSocket'
-    })
+    //  this.socket = this.$nuxtSocket({
+    //   persist: 'whitebirdSocket'
+    // })
 
     // Join WhiteBoard - Is this necessary?
-    this.socket.emit('joinWhiteboard', {
+    this.socket && this.socket && this.socket.emit && this.socket.emit('joinWhiteboard', {
       sender: this.name,
       room: this.canvasId,
       message: 'Joining Whiteboard'
     })
 
-    this.$nuxt.$on(customEvents.canvasTools.exportImage, () => {
+    this.$EventBus.$on(customEvents.canvasTools.exportImage, () => {
       // This returns the current content as base64-Encoded PNG
       const canvasAsImageB64 = this.canvas.toDataURL()
 
@@ -101,7 +102,7 @@ export default {
         })
     })
 
-    this.$nuxt.$on(customEvents.canvasTools.exportPDF, () => {
+    this.$EventBus.$on(customEvents.canvasTools.exportPDF, () => {
       // This returns the current content as base64-Encoded PNG
       const canvasAsImageB64 = this.canvas.toDataURL()
 
@@ -130,15 +131,19 @@ export default {
     })
 
     // First render in Nuxt is Server-Side, so there is no reference to Window
-    if (process.client) {
-      this.canvas.setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-    this.$nuxt.$emit(customEvents.canvasTools.setRemoveObjectEventListener, true)
+    this.canvas.setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+    // if (process.client) {
+    //   this.canvas.setDimensions({
+    //     width: window.innerWidth,
+    //     height: window.innerHeight
+    //   })
+    // }
+    this.$EventBus.$emit(customEvents.canvasTools.setRemoveObjectEventListener, true)
 
-    this.canvas.on('selection:created', (options) => {
+    this.canvas.on && this.canvas.on('selection:created', (options) => {
       if (options.target.type && options.target.type === 'activeSelection') {
         const invisibleControls = ['mt', 'mr', 'ml', 'mb', 'tr', 'tl', 'bl', 'br', 'mtr']
         invisibleControls.forEach((side) => {
@@ -147,8 +152,8 @@ export default {
       }
     })
 
-    this.canvas.on('mouse:down', (options) => {
-      this.$nuxt.$emit(customEvents.canvasTools.CloseAllWhiteBoardControls, options)
+    this.canvas.on && this.canvas.on('mouse:down', (options) => {
+      this.$EventBus.$emit(customEvents.canvasTools.CloseAllWhiteBoardControls, options)
       const canvasObject = options.target
       if (canvasObject !== null) {
         if (canvasObject.whitebirdData !== undefined) {
@@ -182,16 +187,16 @@ export default {
     }
 
     /** Object FINISHED changing */
-    this.canvas.on('object:moved', canvasModifiedCallback)
-    this.canvas.on('object:scaled', canvasModifiedCallback)
-    this.canvas.on('object:rotated', canvasModifiedCallback)
+    this.canvas.on && this.canvas.on('object:moved', canvasModifiedCallback)
+    this.canvas.on && this.canvas.on('object:scaled', canvasModifiedCallback)
+    this.canvas.on && this.canvas.on('object:rotated', canvasModifiedCallback)
 
     /** Object IS changing  */
-    this.canvas.on('object:moving', canvasModifyingCallback)
-    this.canvas.on('object:scaling', canvasModifyingCallback)
-    this.canvas.on('object:rotating', canvasModifyingCallback)
+    this.canvas.on && this.canvas.on('object:moving', canvasModifyingCallback)
+    this.canvas.on && this.canvas.on('object:scaling', canvasModifyingCallback)
+    this.canvas.on && this.canvas.on('object:rotating', canvasModifyingCallback)
 
-    this.canvas.on('object:added', (options) => {
+    this.canvas.on && this.canvas.on('object:added', (options) => {
       const canvasObject = options.target
       if (canvasObject.whitebirdData !== undefined &&
       canvasObject.whitebirdData.persistedOnServer !== true) {
@@ -202,7 +207,7 @@ export default {
       }
     })
 
-    this.canvas.on('object:modified', (options) => {
+    this.canvas.on && this.canvas.on('object:modified', (options) => {
       const canvasObject = options.target
       if (canvasObject.type === 'activeSelection') {
         this.canvas.getActiveObjects().forEach((obj) => {
@@ -219,7 +224,7 @@ export default {
       }
     })
 
-    this.$nuxt.$on(customEvents.canvasTools.sendCustomModified, (options) => {
+    this.$EventBus.$on(customEvents.canvasTools.sendCustomModified, (options) => {
       const canvasObject = options
       if (canvasObject.whitebirdData !== undefined) {
         if (canvasObject.whitebirdData.tempObject !== true) {
@@ -230,7 +235,7 @@ export default {
       }
     })
 
-    this.canvas.on('object:removed', (options) => {
+    this.canvas.on && this.canvas.on('object:removed', (options) => {
       const canvasObject = options.target
       if (canvasObject.whitebirdData !== undefined) {
         if (canvasObject.whitebirdData.tempObject !== true) {
@@ -244,17 +249,17 @@ export default {
       }
     })
 
-    this.$nuxt.$on(customEvents.canvasTools.enliven, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.enliven, (payload) => {
       this.createObjectsFromJSON(payload)
     })
-    this.$nuxt.$on(customEvents.canvasTools.deletedObejctFromServer, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.deletedObejctFromServer, (payload) => {
       this.deletedObejctFromServer(payload)
     })
-    this.$nuxt.$on(customEvents.canvasTools.updateObjectFromServer, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.updateObjectFromServer, (payload) => {
       this.updateObjectFromServer(payload)
     })
 
-    this.$nuxt.$on('imageBackgroundChanged', (payload) => {
+    this.$EventBus.$on('imageBackgroundChanged', (payload) => {
       this.backgroundImage = payload
     })
 
@@ -263,18 +268,18 @@ export default {
 
   methods: {
     reloadCanvas () {
-      this.$nuxt.$emit(customEvents.canvasTools.updatingDataState, true)
-      this.loadFonts().then(() => {
-        this.$axios.get(`whiteboard/${this.canvasId}`).then((res) => {
-          if (res.status === 200) {
-            if (res.data.canvasObjects.length > 0) {
-              res.data.canvasObjects.forEach((object) => this.createObjectsFromJSON(object))
-            }
-          }
-          this.$nuxt.$emit(customEvents.canvasTools.updatingDataState, false)
-          return undefined
-        })
-      })
+      this.$EventBus.$emit(customEvents.canvasTools.updatingDataState, true)
+      // this.loadFonts().then(() => {
+      //   this.$axios.get(`whiteboard/${this.canvasId}`).then((res) => {
+      //     if (res.status === 200) {
+      //       if (res.data.canvasObjects.length > 0) {
+      //         res.data.canvasObjects.forEach((object) => this.createObjectsFromJSON(object))
+      //       }
+      //     }
+      //     this.$EventBus.$emit(customEvents.canvasTools.updatingDataState, false)
+      //     return undefined
+      //   })
+      // })
     },
     async loadFonts () {
       const fonts = ['Pacifico', 'VT323', 'Quicksand', 'Inconsolata', 'Roboto']
@@ -315,7 +320,7 @@ export default {
         message: objectAsJson,
         room: this.canvasId
       }
-      this.socket.emit('createCanvasObjectClient', message)
+      this.socket && this.socket.emit && this.socket.emit('createCanvasObjectClient', message)
     },
     updateObject (canvasObject) {
       const objectAsJson = this.customToJSON(canvasObject)
@@ -324,7 +329,7 @@ export default {
         message: objectAsJson,
         room: this.canvasId
       }
-      this.socket.emit('updateCanvasObjectClient', message)
+      this.socket && this.socket.emit && this.socket.emit('updateCanvasObjectClient', message)
     },
     removeObject (canvasObject) {
       const objectAsJson = this.customToJSON(canvasObject)
@@ -333,7 +338,7 @@ export default {
         message: objectAsJson,
         room: this.canvasId
       }
-      this.socket.emit('deleteCanvasObjectClient', message)
+      this.socket && this.socket.emit && this.socket.emit('deleteCanvasObjectClient', message)
     },
     customToJSON (canvasObject) {
       // Axios will call 'toJSON' before sending, as we cannot actually send an Object
@@ -348,7 +353,7 @@ export default {
       fabric.util.enlivenObjects([canvasObjectAsJSON], (enlivenedObjects) => {
         enlivenedObjects.forEach((enlivenedObject) => {
           if (enlivenedObject.whitebirdData.type === 'StickyNote') {
-            this.$nuxt.$emit(customEvents.canvasTools.stickyNoteEnliven, enlivenedObject)
+            this.$EventBus.$emit(customEvents.canvasTools.stickyNoteEnliven, enlivenedObject)
           } else if (enlivenedObject.type === 'textbox') {
             const invisibleControls = ['mt', 'mr', 'ml', 'mb']
             invisibleControls.forEach((side) => {
@@ -437,6 +442,7 @@ export default {
                 this.canvas.centerObject(SVGObject)
                 this.canvas.add(SVGObject)
               })
+              console.log(_)
             }
           } else if (file.type === 'image/jpeg' || file.type === 'image/png') {
             reader.readAsDataURL(file)
@@ -453,6 +459,7 @@ export default {
                 this.canvas.centerObject(img)
                 this.canvas.add(img)
               })
+              console.log(_)
             }
           } else {
             this.$swal.fire({

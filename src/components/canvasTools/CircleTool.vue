@@ -6,8 +6,8 @@
 import { fabric } from 'fabric'
 import { v4 } from 'uuid'
 import { mapState } from 'vuex'
-import customEvents from '~/utils/customEvents'
-import WhitebirdLogger from '~/utils/WhitebirdLogger'
+import customEvents from '@/utils/customEvents'
+import WhitebirdLogger from '@/utils/WhitebirdLogger'
 
 const logger = new WhitebirdLogger('CircleTool.vue')
 
@@ -25,7 +25,7 @@ export default {
     })
   },
   mounted () {
-    this.$nuxt.$on(customEvents.canvasTools.circle, (payload) => {
+    this.$EventBus.$on(customEvents.canvasTools.circle, (payload) => {
       this.canvas.isDrawingMode = false
       this.createCircle(payload)
     })

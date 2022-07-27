@@ -20,6 +20,7 @@ import './core/lazy_use' // use lazy load components
 import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
+import '@/assets/scss/main.scss'
 
 Vue.config.productionTip = false
 
@@ -31,6 +32,8 @@ Vue.component('page-container', PageHeaderWrapper)
 Vue.component('page-header-wrapper', PageHeaderWrapper)
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
+
+Vue.prototype.$EventBus = new Vue()
 
 new Vue({
   router,
